@@ -570,8 +570,9 @@ class MYNTEYEWrapperNodelet : public nodelet::Nodelet {
       const std::string color_frame_id,
       const image_transport::Publisher& pub_mono, bool mono_sub,
       const std::string mono_frame_id, bool is_left) {
+    // image timestamp is at half of exposure
     auto timestamp = data.img_info
-          ? hardTimeToSoftTime(data.img_info->timestamp)
+          ? hardTimeToSoftTime(data.img_info->timestamp - data.img_info->exposure_time / 2)
           : ros::Time().now();
     auto&& mat = data.img->To(ImageFormat::COLOR_RGB)->ToMat();
 
@@ -603,8 +604,9 @@ class MYNTEYEWrapperNodelet : public nodelet::Nodelet {
 
   void publishDepth(const StreamData& data) {
     std_msgs::Header header;
+    // image timestamp is at half of exposure
     header.stamp = data.img_info
-        ? hardTimeToSoftTime(data.img_info->timestamp)
+        ? hardTimeToSoftTime(data.img_info->timestamp - data.img_info->exposure_time / 2)
         : ros::Time().now();
     header.frame_id = depth_frame_id;
 

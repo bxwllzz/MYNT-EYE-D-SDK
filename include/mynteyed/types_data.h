@@ -35,7 +35,7 @@ struct MYNTEYE_API ImgInfo {
   /** Image frame id */
   std::uint16_t frame_id;
 
-  /** Image timestamp */
+  /** Image timestamp at exposure end */
   std::uint32_t timestamp;
 
   /** Image exposure time */
