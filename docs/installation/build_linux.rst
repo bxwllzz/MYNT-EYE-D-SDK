@@ -54,9 +54,19 @@ Alternatively, refer to the command below:
 1.2 Install PCL for Point Cloud sample (Optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    To build and install PCL, please refer to `PCL Installation <http://www.pointclouds.org/documentation/tutorials/compiling_pcl_posix.php>`__
+
 .. code-block:: bash
 
-   sudo apt-get install libpcl-dev libproj-dev libopenni2-dev libopenni-dev
+  git clone https://github.com/PointCloudLibrary/pcl.git
+  cd pcl
+  git checkout pcl-1.7.2
+  mkdir build && cd build
+
+  cmake -DCMAKE_BUILD_TYPE=Release ..
+
+  make -j2
+  sudo make -j2 install
 
 1.3 Link libGL.so for TX1/TX2 compile bug (Optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,86 +172,7 @@ Alternatively, refer to the command below:
 If you won’t use ROS(The Robot Operating System), you can skip this
 part.
 
-4.1 Install ROS Kinetic
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   cd ~
-   wget https://raw.githubusercontent.com/oroca/oroca-ros-pkg/master/ros_install.sh && \
-   chmod 755 ./ros_install.sh && bash ./ros_install.sh catkin_ws kinetic
-
-.. note::
-
-   ROS Kinetic will install OpenCV, JPEG.
-
-4.2 Build ROS Wrapper
-~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   make ros
-
-**Core:**
-
-.. code-block:: bash
-
-   roscore
-
-**RViz Display:**
-
-.. code-block:: bash
-
-   source ./wrappers/ros/devel/setup.bash
-   roslaunch mynteye_wrapper_d display.launch
-
-**Publish:**
-
-.. code-block:: bash
-
-   source ./wrappers/ros/devel/setup.bash
-   roslaunch mynteye_wrapper_d mynteye.launch
-
-4.3 Build Beta Device ROS Wrapper
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   make ros
-
-**Core:**
-
-.. code-block:: bash
-
-   roscore
-
-**RViz Display:**
-
-.. code-block:: bash
-
-   source ./wrappers/beta_ros/devel/setup.bash
-   roslaunch mynteye_wrapper_d_beta display.launch
-
-**Publish:**
-
-.. code-block:: bash
-
-   source ./wrappers/beta_ros/devel/setup.bash
-   roslaunch mynteye_wrapper_d_beta mynteye.launch
-
-**Subscribe:**
-
-.. code-block:: bash
-
-   source ./wrappers/beta_ros/devel/setup.bash
-   rosrun mynteye_wrapper_d_beta mynteye_listener_d_beta
-
-**Subscribe:**
-
-.. code-block:: bash
-
-   source ./wrappers/beta_ros/devel/setup.bash
-   rosrun mynteye_wrapper_d_beta mynteye_listener_d_beta
+ROS installation and operation steps, refer to :ref:`ros_install` 以及 :ref:`ros_usage` .
 
 5. Package
 ----------

@@ -9,9 +9,22 @@ If you wanna run ORB_SLAM2 with MYNT EYE camera, please follow the steps:
 
 1. Download `MYNT-EYE-D-SDK <https://github.com/slightech/MYNT-EYE-D-SDK.git>`_ and :ref:`ros_install`.
 2. Follow the normal procedure to install ORB_SLAM2.
-3. Update ``distortion_parameters`` and ``projection_parameters`` to ``<ORB_SLAM2>/config/mynteye_*.yaml``.
-4. Run examples by MYNT® EYE.
+3. Run examples by MYNT® EYE.
 
+Prerequisites
+------------------
+
+.. code-block:: bash
+
+    sudo apt-get -y install libglew-dev cmake
+    cd ~
+    git clone https://github.com/stevenlovegrove/Pangolin.git
+    cd Pangolin
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+    sudo make install
 
 Building the nodes for stereo (ROS)
 --------------------------------------------
@@ -26,14 +39,13 @@ Building the nodes for stereo (ROS)
 
 .. code-block:: bash
 
+  chmod +x build.sh
+  ./build.sh
   chmod +x build_ros.sh
   ./build_ros.sh
 
 Stereo_ROS Example
 ~~~~~~~~~~~~~~~~~~~
-
-  * Reference ``Get camera calibration parameters`` in :ref:`slam_okvis` to get ``distortion_parameters`` and ``projection_parameters`` , and update ``<ORB_SLAM2>/config/mynteye_d_stereo.yaml`` .
-  * Launch ORB_SLAM2 ``Stereo_ROS``
 
 Run camera ``mynteye_wrapper_d``
 
@@ -42,7 +54,7 @@ Run camera ``mynteye_wrapper_d``
   cd [path of mynteye-d-sdk]
   make ros
   source ./wrappers/ros/devel/setup.bash
-  roslaunch mynteye_wrapper_d mynteye.launch
+  roslaunch mynteye_wrapper_d orb_slam2.launch
 
 Open another terminal and run ORB_SLAM2
 

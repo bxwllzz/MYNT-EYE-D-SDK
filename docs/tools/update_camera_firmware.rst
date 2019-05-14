@@ -1,19 +1,15 @@
-.. role:: raw-latex(raw)
-   :format: latex
-..
-
 .. _update_camera_firmware:
 
-Update Camera Firmware
-======================
+Update Main Processing Chip
+=============================
 
 .. note::
  This tool does not support beta device upgrade.
 
-Get Firmware
-------------
+Get Main Chip Firmware
+-----------------------
 
-Latest firmware: SICI-B12-B0135P-016-005-ISO_Plugout2M(Interleave).bin
+Latest firmware: MYNTEYE_D_016_006.bin
 `Google
 Drive <https://drive.google.com/open?id=1gAbTf6W10a8iwT7L9TceMVgxQCWKnEsx>`__,
 `Baidu Pan <https://pan.baidu.com/s/1sZKxugg5P8Dk5QgneA9ttw>`__
@@ -36,7 +32,7 @@ Update Firmware
 
  2, Select data type(256KB).
 
- 3, Select camera firmware.
+ 3, Select chip firmware.
 
  4, Select ``Keep tables`` (in order to keep calibration parameters).
 

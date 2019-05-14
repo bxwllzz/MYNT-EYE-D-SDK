@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "mynteyed/device/device.h"
 #include <cstring>
 #include <fstream>
 #include <string>
 
+#include "mynteyed/device/device.h"
 #include "mynteyed/util/log.h"
 
 MYNTEYE_USE_NAMESPACE
@@ -104,7 +104,6 @@ Device::~Device() {
 
 void Device::Init() {
   int ret = EtronDI_Init(&etron_di_, false);
-  DBG_LOGI("MYNTEYE Init: %d", ret);
   UNUSED(ret);
 
   stream_color_info_ptr_ =
@@ -287,23 +286,23 @@ void Device::SetInfraredDepthOnly(const OpenParams& params) {
   if (params.dev_mode != DeviceMode::DEVICE_ALL) {
     error_n = 1;
     EtronDI_EnableInterleave(etron_di_, &dev_sel_info_, false);
-  } else if (params.framerate < 15 || params.framerate > 30) {
+  } else if (params.framerate < 30 || params.framerate > 60) {
     error_n = 2;
     EtronDI_EnableInterleave(etron_di_, &dev_sel_info_, false);
   } else if (params.stream_mode == StreamMode::STREAM_2560x720 &&
-      params.framerate > 15) {
+      params.framerate > 30) {
     error_n = 3;
     EtronDI_EnableInterleave(etron_di_, &dev_sel_info_, false);
   }
 
   if (error_n > 0) {
     throw_error("\n\nNote: IR Depth Only mode support frame"
-        " rate only be between 15fps and 30fps.\n"
+        " rate only be between 30fps and 60fps.\n"
         "    When dev_mode != DeviceMode::DEVICE_ALL,"
         " IR Depth Only mode not be supported.\n"
         "    When stream_mode == StreamMode::STREAM_2560x720,"
-        " frame rate only be 15fps in this mode.\n"
-        "    When frame rate less than 15fps or greater than 30fps,"
+        " frame rate only be 30fps in this mode.\n"
+        "    When frame rate less than 30fps or greater than 60fps,"
         " IR Depth Only mode will be not available.\n");
 
     return;
@@ -320,7 +319,7 @@ void Device::SetInfraredDepthOnly(const OpenParams& params) {
   }
   ir_depth_only_enabled_ = true;
   EtronDI_EnableInterleave(etron_di_, &dev_sel_info_, true);
-  framerate_ *= 2;
+  // framerate_ *= 2;
 }
 
 void Device::SetInfraredIntensity(const std::uint16_t &value) {
@@ -1150,4 +1149,32 @@ bool Device::GetGlobalGain(float &value) {
   } else {
     return false;
   }
+}
+
+void Device::SetSerialNumber(const std::string &sn) {
+  unsigned char serial_n[48];
+
+  for (int i = 0; i <= 23; i++) {
+    serial_n[i * 2] = static_cast<unsigned char>(sn[i]);
+    serial_n[i * 2 + 1] = 0x00;
+  }
+  EtronDI_SetSerialNumber(etron_di_, &dev_sel_info_, serial_n, 48);
+}
+
+std::string Device::GetSerialNumber() const {
+  unsigned char serial_n[512];
+  int len;
+  EtronDI_GetSerialNumber(etron_di_, (PDEVSELINFO)&dev_sel_info_, serial_n, 512, &len);
+
+  char tmp[25];
+  for (int i = 0; i < len / 2; i++) {
+    tmp[i] = serial_n[i * 2];
+  }
+  tmp[24] = '\0';
+  std::string s = tmp;
+  return s;
+}
+
+bool Device::IsIRDepthOnly() {
+  return ir_depth_only_enabled_;
 }

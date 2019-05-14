@@ -60,6 +60,10 @@ bool Camera::IsOpened() const {
   return p_->IsOpened();
 }
 
+OpenParams Camera::GetOpenParams() const {
+  return p_->GetOpenParams();
+}
+
 std::shared_ptr<device::Descriptors> Camera::GetDescriptors() const {
   return p_->GetDescriptors();
 }
@@ -70,12 +74,35 @@ std::string Camera::GetDescriptor(const Descriptor &desc) const {
 
 StreamIntrinsics Camera::GetStreamIntrinsics(
     const StreamMode& stream_mode, bool* ok) const {
-  return p_->GetStreamIntrinsics(stream_mode, ok);
+  auto in = p_->GetStreamIntrinsics(stream_mode, ok);
+  if (*ok) return in;
+  // if false, return default intrinsics
+  // {w, h, fx, fy, cx, cy, coeffs[5]{k1,k2,p1,p2,k3}}
+  CameraIntrinsics cam_in;
+  switch (stream_mode) {
+    case StreamMode::STREAM_640x480:
+      cam_in = {640, 480, 979.8, 942.8, 682.3 / 2, 254.9, {0, 0, 0, 0, 0}};
+    case StreamMode::STREAM_1280x480:
+      cam_in = {640, 480, 979.8, 942.8, 682.3, 254.9, {0, 0, 0, 0, 0}};
+    case StreamMode::STREAM_1280x720:
+      cam_in = {1280, 720, 979.8, 942.8, 682.3, 254.9 * 2, {0, 0, 0, 0, 0}};
+    case StreamMode::STREAM_2560x720:
+      cam_in = {1280, 720, 979.8, 942.8, 682.3 * 2, 254.9 * 2, {0, 0, 0, 0, 0}};
+    default:
+      cam_in = {1280, 720, 979.8, 942.8, 682.3, 254.9 * 2, {0, 0, 0, 0, 0}};
+  }
+  return {cam_in, cam_in};
 }
 
 StreamExtrinsics Camera::GetStreamExtrinsics(
     const StreamMode& stream_mode, bool* ok) const {
-  return p_->GetStreamExtrinsics(stream_mode, ok);
+  auto ex = p_->GetStreamExtrinsics(stream_mode, ok);
+  if (*ok) return ex;
+
+  return {{0.99978113174438477, 0.00282573699951172, 0.02072787284851074,
+    -0.00284624099731445, 0.99999547004699707, 0.00096035003662109,
+    -0.02072513103485107, -0.00101912021636963, 0.99978458881378174},
+    {-120.21408843994140625, 0.00000000000000000, 0.00000000000000000}};
 }
 
 bool Camera::WriteCameraCalibrationBinFile(const std::string& filename) {
